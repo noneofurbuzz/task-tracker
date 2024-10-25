@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const taskManager = require('../index.js')
+const fs = require('fs')
 const {Command} = require('commander')
 const program = new Command();
 
@@ -12,7 +13,13 @@ program
     .command('add <description>')
     .description('Add a task')
     .action((description) => {
-        taskManager.addTask(
-        )
+        let data = taskManager.readFile()
+        let test = taskManager.addTask()
+        test.description = description
+        data.push(test)
+        data = JSON.stringify(data)
+        fs.writeFileSync('tasks.json',data,(err) => {
+            if (err) throw err
+        })
     })
 program.parse(process.argv)
