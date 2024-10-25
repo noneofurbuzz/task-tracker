@@ -14,11 +14,11 @@ program
     .description('Add a task')
     .action((description) => {
         let data = taskManager.readFile()
-        let test = taskManager.addTask()
-        test.description = description
-        test.id = (data.length) + 1
-        data.push(test)
-        data = JSON.stringify(data)
+        let addedTask = taskManager.addTask()
+        addedTask.description = description
+        addedTask.id = (data.length) + 1
+        data.push(addedTask) 
+        data = JSON.stringify(data,null,5)
         fs.writeFileSync('tasks.json',data,(err) => {
             if (err) throw err
         })
