@@ -1,5 +1,4 @@
 const fs = require('fs')
-
 function writeFile(){
     fs.writeFileSync('tasks.json',"[]" ,(err) => {
         if (err) throw err}
@@ -21,16 +20,18 @@ function readFile(){
 }
 function addTask(){
     readFile()
-    for (let id = 0; id >= 0; id ++){
-        let taskProperty = {
-            id: id + 1 ,
-            description: "",
-            status: "todo",
-            createdAt: new Date(),
-            updatedAt: ""
-        } 
+    for (i = 0;i <= 0;i++){
+
+    }
+    let taskProperty = {
+        id: 1,
+        description: "",
+        status: "todo",
+        createdAt: new Date(),
+        updatedAt: ""
+    } 
         return taskProperty
-        }
+        
 }
 
 module.exports = {addTask,readFile}
