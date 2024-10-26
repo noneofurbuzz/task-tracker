@@ -2,6 +2,7 @@
 
 const taskManager = require('../index.js')
 const fs = require('fs')
+const chalk = require('chalk')
 const {Command} = require('commander')
 const program = new Command();
 
@@ -22,7 +23,7 @@ program
         fs.writeFileSync('tasks.json',data,(err) => {
             if (err) throw err
         })
-        console.log(`Task added successfully (ID: ${addedTask.id})`)
+        console.log(chalk.hex('#4bb543').bold(`Task added successfully (ID: ${addedTask.id})`))
     })
 program
     .command('delete <id>')
@@ -38,7 +39,7 @@ program
         fs.writeFileSync('tasks.json',deleteTask,(err) => {
             if (err) throw err
         })
-        console.log("Task deleted successfully")
+        console.log(chalk.hex('#4bb543').bold("Task deleted successfully"))
         })
         
     
