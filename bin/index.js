@@ -46,6 +46,24 @@ program
             console.log(chalk.red.bold(`No such (ID: ${id}) exists. No tasks deleted`))
         }
         })
-        
+program
+        .command('update <id> [description]')
+        .description('Update a task')
+        .action((id,description) => {
+            let data = taskManager.readFile()
+            if (data.length > id){
+                data[id-1].description = description
+                data = JSON.stringify(data,null,5)
+                fs.writeFileSync('tasks.json',data,(err) => {
+                if (err) throw err
+            })
+            console.log(chalk.hex('#4bb543').bold(`Task updated successfully (ID: ${id})`))
+            }
+            else{
+                console.log(chalk.red.bold(`No such (ID: ${id}) exists. No tasks updated`))
+            }
+            
+
+        })
     
 program.parse(process.argv)
