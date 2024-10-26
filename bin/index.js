@@ -35,11 +35,16 @@ program
             task.id = deleteTask.indexOf(task) + 1               
         }
         )
-        deleteTask = JSON.stringify(deleteTask,null,5)
-        fs.writeFileSync('tasks.json',deleteTask,(err) => {
-            if (err) throw err
-        })
-        console.log(chalk.hex('#4bb543').bold("Task deleted successfully"))
+        if (deleteTask.length > id){
+            deleteTask = JSON.stringify(deleteTask,null,5)
+            fs.writeFileSync('tasks.json',deleteTask,(err) => {
+                if (err) throw err
+            })
+            console.log(chalk.hex('#4bb543').bold("Task deleted successfully"))
+        }
+        else{
+            console.log(chalk.red.bold(`No such (ID: ${id}) exists. No tasks deleted`))
+        }
         })
         
     
