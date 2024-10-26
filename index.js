@@ -31,7 +31,10 @@ function addTask(){
         updatedAt: ""
     } 
         return taskProperty
-        
 }
-
+/*function deleteTask(){
+    let data = readFile()
+    let test = data.map((task) => task.id = )
+    
+}*/
 module.exports = {addTask,readFile}

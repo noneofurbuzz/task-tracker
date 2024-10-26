@@ -22,5 +22,24 @@ program
         fs.writeFileSync('tasks.json',data,(err) => {
             if (err) throw err
         })
+        console.log(`Task added successfully (ID: ${addedTask.id})`)
     })
+program
+    .command('delete <id>')
+    .description('Delete a task')
+    .action((id) => {
+        let data = taskManager.readFile()
+        let deleteTask = data.filter((task) => task.id != id)
+        let updatedTaskList = deleteTask.map((task) => {
+            task.id = deleteTask.indexOf(task) + 1               
+        }
+        )
+        deleteTask = JSON.stringify(deleteTask,null,5)
+        fs.writeFileSync('tasks.json',deleteTask,(err) => {
+            if (err) throw err
+        })
+        console.log("Task deleted successfully")
+        })
+        
+    
 program.parse(process.argv)
