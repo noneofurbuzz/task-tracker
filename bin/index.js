@@ -53,6 +53,7 @@ program
             let data = taskManager.readFile()
             if (data.length > id){
                 data[id-1].description = description
+                data[id-1].updatedAt = new Date()
                 data = JSON.stringify(data,null,5)
                 fs.writeFileSync('tasks.json',data,(err) => {
                 if (err) throw err
