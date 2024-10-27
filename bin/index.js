@@ -47,7 +47,7 @@ program
         }
         })
 program
-        .command('update <id> [description]')
+        .command('update <id> <description>')
         .description('Update a task')
         .action((id,description) => {
             let data = taskManager.readFile()
@@ -83,7 +83,7 @@ program
                 console.log(chalk.red.bold(`No such (ID: ${id}) exists`))
             }
         })
-        program
+program
         .command('mark-in-progress <id>')
         .description("Mark a task as in progress")
         .action((id) => {
@@ -100,5 +100,46 @@ program
                 console.log(chalk.red.bold(`No such (ID: ${id}) exists`))
             }
         })
-
+program
+        .command('list [status]')
+        .description("List all tasks or list tasks by status")
+        .action((status) => {
+            let data = taskManager.readFile()
+            if (status == null){
+                for (let i = 0;i < data.length;i = i + 1){
+                console.log(`${chalk.bold(`${data[i].id}. ${data[i].description}`)} ${data[i].status == "in-progress" ? chalk.yellow.bold(`(status: ${data[i].status})`) : (data[i].status == "done" ? chalk.hex('4bb543').bold(`(status: ${data[i].status})`) : chalk.red.bold(`(status: ${data[i].status})`)) } ${chalk.blue.bold(`[ID: ${data[i].id}]`)}`)
+                }
+            }
+            else if (status == "done"){
+                let index = 1
+                console.log(`${chalk.bold(`Listing tasks by `)}${chalk.hex('4bb543').bold(`(status: done)`)}:`)
+                for (let i = 0;i <data.length;i = i + 1){
+                    if (data[i].status == "done"){
+                        console.log(`${chalk.bold(`${index}. ${data[i].description}`)} ${chalk.blue.bold(`[ID: ${data[i].id}]`)}`)
+                        index++
+                    }
+                }}
+            else if (status == "in-progress"){
+                let index = 1
+                console.log(`${chalk.bold(`Listing tasks by `)}${chalk.yellow.bold(`(status: in-progress)`)}:`)
+                for (let i = 0;i <data.length;i = i + 1){
+                    if (data[i].status == "in-progress"){
+                        console.log(`${chalk.bold(`${index}. ${data[i].description}`)} ${chalk.blue.bold(`[ID: ${data[i].id}]`)}`)
+                        index++
+                    }
+                }}
+            else if (status == "todo"){
+                let index = 1
+                console.log(`${chalk.bold(`Listing tasks by `)}${chalk.red.bold(`(status: todo)`)}:`)
+                for (let i = 0;i <data.length;i = i + 1){
+                    if (data[i].status == "todo"){
+                        console.log(`${chalk.bold(`${index}. ${data[i].description}`)} ${chalk.blue.bold(`[ID: ${data[i].id}]`)}`)
+                        index++
+                    }
+                }}
+            else{
+                console.log(`${chalk.bold.red(`No such status exists. Did you mean 'done', 'in-progress', or 'todo'? `)}`)
+            }
+            }
+        )
 program.parse(process.argv)
