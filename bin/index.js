@@ -35,7 +35,7 @@ program
             task.id = deleteTask.indexOf(task) + 1               
         }
         )
-        if (deleteTask.length > id){
+        if (deleteTask.length >= id){
             deleteTask = JSON.stringify(deleteTask,null,5)
             fs.writeFileSync('tasks.json',deleteTask,(err) => {
                 if (err) throw err
@@ -51,7 +51,7 @@ program
         .description('Update a task')
         .action((id,description) => {
             let data = taskManager.readFile()
-            if (data.length > id){
+            if (data.length >= id){
                 data[id-1].description = description
                 data[id-1].updatedAt = new Date()
                 data = JSON.stringify(data,null,5)
@@ -66,5 +66,39 @@ program
             
 
         })
-    
+program
+        .command('mark-done <id>')
+        .description("Mark a task as done")
+        .action((id) => {
+            let data = taskManager.readFile()
+            if (data.length >= id){
+            data[id - 1].status = "done"
+            data = JSON.stringify(data,null,5)
+            fs.writeFileSync('tasks.json',data,(err) => {
+                if (err) throw err
+            })
+            console.log(chalk.hex('#4bb543').bold(`Task marked as done (ID: ${id})`))
+            }
+            else{
+                console.log(chalk.red.bold(`No such (ID: ${id}) exists`))
+            }
+        })
+        program
+        .command('mark-in-progress <id>')
+        .description("Mark a task as in progress")
+        .action((id) => {
+            let data = taskManager.readFile()
+            if (data.length >= id){
+            data[id - 1].status = "in-progress"
+            data = JSON.stringify(data,null,5)
+            fs.writeFileSync('tasks.json',data,(err) => {
+                if (err) throw err
+            })
+            console.log(chalk.hex('#4bb543').bold(`Task marked as in-progress (ID: ${id})`))
+            }
+            else{
+                console.log(chalk.red.bold(`No such (ID: ${id}) exists`))
+            }
+        })
+
 program.parse(process.argv)
