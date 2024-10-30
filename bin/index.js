@@ -5,8 +5,9 @@ const chalk = require('chalk')
 const {Command} = require('commander')
 const program = new Command();
 
-function writeFile(){
-    fs.writeFileSync('tasks.json',"[]" ,(err) => {
+
+function writeFile(data){
+    fs.writeFileSync('tasks.json',data ,(err) => {
         if (err) throw err}
     )    
 }
@@ -19,7 +20,8 @@ function readFile(){
         return JSON.parse(data)
     }
     else{
-       writeFile()
+        data = "[]"
+       writeFile(data)
        return JSON.parse('[]')
     }
 
@@ -58,9 +60,7 @@ program
         taskProperty.id = (data.length) + 1
         data.push(taskProperty) 
         data = JSON.stringify(data,null,5)
-        fs.writeFileSync('tasks.json',data,(err) => {
-            if (err) throw err
-        })
+        writeFile(data)
         console.log(chalk.hex('#4bb543')(`Task added successfully (ID: ${taskProperty.id})`))
     })
     .showHelpAfterError(chalk("Example: task-cli add 'Buy groceries'"))
@@ -81,9 +81,8 @@ program
         )
         
             deleteTask = JSON.stringify(deleteTask,null,5)
-            fs.writeFileSync('tasks.json',deleteTask,(err) => {
-                if (err) throw err
-            })
+            data = JSON.stringify(data,null,5)
+            writeFile(data)
             console.log(chalk.hex('#4bb543')("Task deleted successfully"))
         }
         else{
@@ -103,9 +102,7 @@ program
                 data[id-1].description = description
                 data[id-1].updatedAt = new Date()
                 data = JSON.stringify(data,null,5)
-                fs.writeFileSync('tasks.json',data,(err) => {
-                if (err) throw err
-            })
+                writeFile(data)
             console.log(chalk.hex('#4bb543')(`Task updated successfully (ID: ${id})`))
             }
             else{
@@ -123,9 +120,7 @@ program
             if (data.length >= id){
             data[id - 1].status = "done"
             data = JSON.stringify(data,null,5)
-            fs.writeFileSync('tasks.json',data,(err) => {
-                if (err) throw err
-            })
+            writeFile(data)
             console.log(chalk.hex('#4bb543')(`Task marked as done (ID: ${id})`))
             }
             else{
@@ -141,9 +136,7 @@ program
             if (data.length >= id){
             data[id - 1].status = "in-progress"
             data = JSON.stringify(data,null,5)
-            fs.writeFileSync('tasks.json',data,(err) => {
-                if (err) throw err
-            })
+            writeFile(data)
             console.log(chalk.hex('#4bb543')(`Task marked as in-progress (ID: ${id})`))
             }
             else{
