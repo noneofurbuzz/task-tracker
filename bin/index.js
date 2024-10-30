@@ -1,11 +1,29 @@
 #!/usr/bin/env node
 
-const taskManager = require('../index.js')
 const fs = require('fs')
 const chalk = require('chalk')
 const {Command} = require('commander')
 const program = new Command();
 
+function writeFile(){
+    fs.writeFileSync('tasks.json',"[]" ,(err) => {
+        if (err) throw err}
+    )    
+}
+
+function readFile(){
+    if (fs.existsSync('tasks.json')){
+        const data = fs.readFileSync('tasks.json',(err) => {
+            if (err) throw err
+        }) 
+        return JSON.parse(data)
+    }
+    else{
+       writeFile()
+       return JSON.parse('[]')
+    }
+
+}
 program
     .name('task-cli')
     .description("A simple CLI tool to manage tasks")
@@ -25,16 +43,25 @@ program
     .description('Add a task')
     .action((description) => {
         
-        let data = taskManager.readFile()
-        let addedTask = taskManager.addTask()
-        addedTask.description = description
-        addedTask.id = (data.length) + 1
-        data.push(addedTask) 
+        let data = readFile()
+        for (i = 0;i <= 0;i++){
+
+        }
+        let taskProperty = {
+            id: 1,
+            description: "",
+            status: "todo",
+            createdAt: new Date(),
+            updatedAt: ""
+        } 
+        taskProperty.description = description
+        taskProperty.id = (data.length) + 1
+        data.push(taskProperty) 
         data = JSON.stringify(data,null,5)
         fs.writeFileSync('tasks.json',data,(err) => {
             if (err) throw err
         })
-        console.log(chalk.hex('#4bb543')(`Task added successfully (ID: ${addedTask.id})`))
+        console.log(chalk.hex('#4bb543')(`Task added successfully (ID: ${taskProperty.id})`))
     })
     .showHelpAfterError(chalk("Example: task-cli add 'Buy groceries'"))
 
@@ -45,7 +72,7 @@ program
     .description('Delete a task')
     .action((id) => {
         
-        let data = taskManager.readFile()
+        let data = readFile()
         if (data.length >= id){
         let deleteTask = data.filter((task) => task.id != id)
         let updatedTaskList = deleteTask.map((task) => {
@@ -70,7 +97,7 @@ program
         .command('update <id> <new\u00A0description>')
         .description('Update a task')
         .action((id,description) => {
-            let data = taskManager.readFile()
+            let data = readFile()
             
             if (data.length >= id){
                 data[id-1].description = description
@@ -91,7 +118,7 @@ program
         .command('mark-done <id>')
         .description("Mark a task as done")
         .action((id) => {
-            let data = taskManager.readFile()
+            let data = readFile()
             
             if (data.length >= id){
             data[id - 1].status = "done"
@@ -110,7 +137,7 @@ program
         .command('mark-in-progress <id>')
         .description("Mark a task as in progress")
         .action((id) => {
-            let data = taskManager.readFile()
+            let data = readFile()
             if (data.length >= id){
             data[id - 1].status = "in-progress"
             data = JSON.stringify(data,null,5)
@@ -129,7 +156,7 @@ program
         .command('list [status]')
         .description("List all tasks or list tasks by status")
         .action((status) => {
-            let data = taskManager.readFile()
+            let data = readFile()
             if (status == null){
                 if (data.length != 0){ 
                     console.log(chalk("Listing all tasks:"))
