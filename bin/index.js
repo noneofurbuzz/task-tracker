@@ -10,11 +10,21 @@ program
     .name('task-cli')
     .description("A simple CLI tool to manage tasks")
     .version('1.0.0')
+program.configureOutput({
+    writeErr: (str) => {
+        str = str.replace('error: ', chalk.red('Error: '));
+        process.stderr.write(str)
+    }
+})
+program.on('command:*',function(){
+    console.log(`${chalk.red("Error:")} unknown command\n`)
+    program.help()
+})
 program
-    .command('add [description]')
+    .command('add <description>')
     .description('Add a task')
     .action((description) => {
-        if (description != null & description != ""){
+        
         let data = taskManager.readFile()
         let addedTask = taskManager.addTask()
         addedTask.description = description
@@ -24,18 +34,17 @@ program
         fs.writeFileSync('tasks.json',data,(err) => {
             if (err) throw err
         })
-        console.log(chalk.hex('#4bb543').bold(`Task added successfully (ID: ${addedTask.id})`))
-    }
-    else{
-        console.log(chalk.red.bold("Warning: missing task description"))
-        console.log(chalk.bold("Example: task-cli add 'Buy groceries'"))
-    }
+        console.log(chalk.hex('#4bb543')(`Task added successfully (ID: ${addedTask.id})`))
     })
+    .showHelpAfterError(chalk("Example: task-cli add 'Buy groceries'"))
+
+    
+    
 program
-    .command('delete [id]')
+    .command('delete <id>')
     .description('Delete a task')
     .action((id) => {
-        if (id != null & id != ""){
+        
         let data = taskManager.readFile()
         if (data.length >= id){
         let deleteTask = data.filter((task) => task.id != id)
@@ -48,22 +57,21 @@ program
             fs.writeFileSync('tasks.json',deleteTask,(err) => {
                 if (err) throw err
             })
-            console.log(chalk.hex('#4bb543').bold("Task deleted successfully"))
+            console.log(chalk.hex('#4bb543')("Task deleted successfully"))
         }
         else{
-            console.log(chalk.red.bold(`No such (ID: ${id}) exists. No tasks deleted`))
-        }
-        }else{
-            console.log(chalk.red.bold("Warning: missing task ID"))
-        console.log(chalk.bold("Example: task-cli delete 1"))
-        console.log(chalk.bold("Run 'task-cli list' to view existing tasks and their corresponding IDs"))
-        }})
+            console.log(chalk.red(`No such (ID: ${id}) exists. No tasks deleted`))
+        }}
+    )
+    .showHelpAfterError("Example: task-cli delete 1\nRun 'task-cli list' to view existing tasks and their corresponding IDs")
+            
+
 program
-        .command('update [id] [description]')
+        .command('update <id> <new\u00A0description>')
         .description('Update a task')
         .action((id,description) => {
             let data = taskManager.readFile()
-            if ((description != null & description != "") ||  (id != null & id != "")){
+            
             if (data.length >= id){
                 data[id-1].description = description
                 data[id-1].updatedAt = new Date()
@@ -71,62 +79,52 @@ program
                 fs.writeFileSync('tasks.json',data,(err) => {
                 if (err) throw err
             })
-            console.log(chalk.hex('#4bb543').bold(`Task updated successfully (ID: ${id})`))
+            console.log(chalk.hex('#4bb543')(`Task updated successfully (ID: ${id})`))
             }
             else{
-                console.log(chalk.red.bold(`No such (ID: ${id}) exists. No tasks updated`))
-            }
-        }else{
-            console.log(chalk.red.bold("Warning: missing task ID or description"))
-        console.log(chalk.bold("Example: task-cli update 1 'Buy groceries and cook dinner'"))
-        console.log(chalk.bold("Run 'task-cli list' to view existing tasks and their corresponding IDs"))
-        }
-
-        })
+                console.log(chalk.red(`No such (ID: ${id}) exists. No tasks updated`))
+            }})
+        .showHelpAfterError("Example: task-cli update 1 'Buy groceries and cook dinner'\nRun 'task-cli list' to view existing tasks and their corresponding IDs")
+        
+        
 program
-        .command('mark-done [id]')
+        .command('mark-done <id>')
         .description("Mark a task as done")
         .action((id) => {
             let data = taskManager.readFile()
-            if  (id != null & id != ""){
+            
             if (data.length >= id){
             data[id - 1].status = "done"
             data = JSON.stringify(data,null,5)
             fs.writeFileSync('tasks.json',data,(err) => {
                 if (err) throw err
             })
-            console.log(chalk.hex('#4bb543').bold(`Task marked as done (ID: ${id})`))
+            console.log(chalk.hex('#4bb543')(`Task marked as done (ID: ${id})`))
             }
             else{
-                console.log(chalk.red.bold(`No such (ID: ${id}) exists`))
-            }
-        }else{
-            console.log(chalk.red.bold("Warning: missing task ID"))
-        console.log(chalk.bold("Example: task-cli mark-done 1"))
-        console.log(chalk.bold("Run 'task-cli list' to view existing tasks and their corresponding IDs"))
-        }})
+                console.log(chalk.red(`No such (ID: ${id}) exists`))
+            }})
+        .showHelpAfterError("Example: task-cli mark-done 1\nRun 'task-cli list' to view existing tasks and their corresponding IDs")
+
 program
-        .command('mark-in-progress [id]')
+        .command('mark-in-progress <id>')
         .description("Mark a task as in progress")
         .action((id) => {
             let data = taskManager.readFile()
-            if (id != null & id != ""){
             if (data.length >= id){
             data[id - 1].status = "in-progress"
             data = JSON.stringify(data,null,5)
             fs.writeFileSync('tasks.json',data,(err) => {
                 if (err) throw err
             })
-            console.log(chalk.hex('#4bb543').bold(`Task marked as in-progress (ID: ${id})`))
+            console.log(chalk.hex('#4bb543')(`Task marked as in-progress (ID: ${id})`))
             }
             else{
-                console.log(chalk.red.bold(`No such (ID: ${id}) exists`))
+                console.log(chalk.red(`No such (ID: ${id}) exists`))
             }
-        }else{
-            console.log(chalk.red.bold("Warning: missing task ID"))
-        console.log(chalk.bold("Example: task-cli mark-in-progress 1"))
-        console.log(chalk.bold("Run 'task-cli list' to view existing tasks and their corresponding IDs"))
-        }})
+        })
+        .showHelpAfterError("Example: task-cli mark-in-progress 1\nRun 'task-cli list' to view existing tasks and their corresponding IDs")
+        
 program
         .command('list [status]')
         .description("List all tasks or list tasks by status")
@@ -134,13 +132,13 @@ program
             let data = taskManager.readFile()
             if (status == null){
                 if (data.length != 0){ 
-                    console.log(chalk.bold("Listing all tasks:"))
+                    console.log(chalk("Listing all tasks:"))
                 for (let i = 0;i < data.length;i = i + 1){
-                console.log(`${chalk.bold(`${data[i].id}. ${data[i].description}`)} ${data[i].status == "in-progress" ? chalk.yellow.bold(`(status: ${data[i].status})`) : (data[i].status == "done" ? chalk.hex('4bb543').bold(`(status: ${data[i].status})`) : chalk.red.bold(`(status: ${data[i].status})`)) } ${chalk.blue.bold(`[ID: ${data[i].id}]`)}`)
+                console.log(`${chalk(`${data[i].id}. ${data[i].description}`)} ${data[i].status == "in-progress" ? chalk.yellow(`(status: ${data[i].status})`) : (data[i].status == "done" ? chalk.hex('4bb543')(`(status: ${data[i].status})`) : chalk.red(`(status: ${data[i].status})`)) } ${chalk.blue(`[ID: ${data[i].id}]`)}`)
                 }
             }
             else{
-                console.log(chalk.bold("No tasks found"))
+                console.log(chalk("No tasks found"))
             }
         }
             else if (status == "done"){
@@ -151,15 +149,15 @@ program
                     if (data[i].status == "done"){
                         statusCount.push(data[i].status)
                         while(count == 1){
-                            console.log(`${chalk.bold(`Listing tasks by `)}${chalk.hex('4bb543').bold(`(status: done)`)}:`)
+                            console.log(`${chalk(`Listing tasks by `)}${chalk.hex('4bb543')(`(status: done)`)}:`)
                             count ++
                         }
-                        console.log(`${chalk.bold(`${index}. ${data[i].description}`)} ${chalk.blue.bold(`[ID: ${data[i].id}]`)}`)
+                        console.log(`${chalk(`${index}. ${data[i].description}`)} ${chalk.blue(`[ID: ${data[i].id}]`)}`)
                         index++
                     }
                     }
                     if(statusCount.length == 0){
-                        console.log(chalk.bold("No tasks found"))
+                        console.log(chalk("No tasks found"))
                 }}
             else if (status == "in-progress"){
                 let index = 1
@@ -169,15 +167,15 @@ program
                     if (data[i].status == "in-progress"){
                         statusCount.push(data[i].status)
                         while(count == 1){
-                            console.log(`${chalk.bold(`Listing tasks by `)}${chalk.yellow.bold(`(status: in-progress)`)}:`)
+                            console.log(`${chalk(`Listing tasks by `)}${chalk.yellow(`(status: in-progress)`)}:`)
                             count ++
                         }
-                        console.log(`${chalk.bold(`${index}. ${data[i].description}`)} ${chalk.blue.bold(`[ID: ${data[i].id}]`)}`)
+                        console.log(`${chalk(`${index}. ${data[i].description}`)} ${chalk.blue(`[ID: ${data[i].id}]`)}`)
                         index++
                     }
                 }
                 if(statusCount.length == 0){
-                    console.log(chalk.bold("No tasks found"))
+                    console.log(chalk("No tasks found"))
             }
             }
             else if (status == "todo"){
@@ -188,20 +186,22 @@ program
                     if (data[i].status == "todo"){
                         statusCount.push(data[i].status)
                         while(count == 1){
-                            console.log(`${chalk.bold(`Listing tasks by `)}${chalk.red.bold(`(status: todo)`)}:`)
+                            console.log(`${chalk(`Listing tasks by `)}${chalk.red(`(status: todo)`)}:`)
                             count ++
                         }
-                        console.log(`${chalk.bold(`${index}. ${data[i].description}`)} ${chalk.blue.bold(`[ID: ${data[i].id}]`)}`)
+                        console.log(`${chalk(`${index}. ${data[i].description}`)} ${chalk.blue(`[ID: ${data[i].id}]`)}`)
                         index++
                     }
                 }
                 if(statusCount.length == 0){
-                    console.log(chalk.bold("No tasks found"))
+                    console.log(chalk("No tasks found"))
             }
             }
             else{
-                console.log(`${chalk.bold.red(`No such status exists. Did you mean 'done', 'in-progress', or 'todo'? `)}`)
+                console.log(`${chalk.red(`No such status exists. Did you mean 'done', 'in-progress', or 'todo'? `)}`)
             }
             }
         )
+
+
 program.parse(process.argv)
