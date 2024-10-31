@@ -37,32 +37,29 @@ cd task-tracker
 1. **Add a new task**
    ```bash
    task-cli add "Buy groceries"
-
-   # Output: Task added successfully (ID: 1)
+    # output: Task added successfully (ID: 1)
    ```
 2. **Update an existing task**
      ```bash
+     # update an existing task with (ID: 1)
    task-cli update 1 "Buy groceries and cook dinner"
-
-   # Output: Task added successfully (ID: 1)
+    # output: Task updated successfully (ID: 1)
    ```
 3. **Delete a task**
     ```bash
+    # delete a task with (ID: 1)
    task-cli delete 1 
-
-   # Output: Task deleted successfully
+    # output: Task deleted successfully
    ```
 4. **Mark task status**
     ```bash
     # mark task as done
    task-cli  mark-done 1
-
-   # Output: Task marked as done (ID: 1)
+    # output: Task marked as done (ID: 1)
 
    # mark task as in-progress
    task-cli mark-in-progress 1
-
-   # Output: Task marked as in-progress (ID: 1)
+    # output: Task marked as in-progress (ID: 1)
    ```
 5. **List all tasks**
     ```bash
