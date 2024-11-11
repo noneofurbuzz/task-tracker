@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/noneofurbuzz/task-tracker#readme",
   "bin": {
-    "task-cli": "./bin/index.js"
+    "task-cli": "./index.js"
   },
   "dependencies": {
     "chalk": "^4.1.2",
