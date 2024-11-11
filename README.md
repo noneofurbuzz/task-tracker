@@ -31,7 +31,14 @@ git clone https://github.com/noneofurbuzz/task-tracker.git
 # navigate to the project directory
 cd task-tracker
 ```
-
+### Install necessary dependecies
+```bash
+npm install
+```
+### Link globally
+```bash
+npm link
+```
 ## Usage
 
 1. **Add a new task**
